@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
 
-const mongo = mongoose.connect(mongodb.url1, {
+const mongo = mongoose.connect(mongodb.url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
