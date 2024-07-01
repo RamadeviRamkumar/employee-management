@@ -1,5 +1,6 @@
 
 const User = require('../Model/User.js');
+const Staff = require('../Model/Staff.js');
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr("admin");
 
@@ -120,5 +121,68 @@ module.exports.Delete = async function (req, res) {
     } catch (err) {
         console.error("Error deleting user:", err);
         res.status(500).send({ message: "Internal Server Error" });
+    }
+};
+
+module.exports.create = async function (req, res) {
+    try {
+        const { 
+            empId, firstName, lastName, organizationName, emailId, mobileNumber, 
+            country, state, city, dob, dateOfJoining, photo, address, password, confirmPassword, gender 
+        } = req.body;
+
+        // Validate password and confirm password
+        if (password !== confirmPassword) {
+            return res.status(400).json({ message: 'Passwords do not match' });
+        }
+
+        console.log("Password to encrypt:", password);
+        const encryptedPassword = cryptr.encrypt(password);
+        console.log("Encrypted password:", encryptedPassword);
+
+        const staff = new Staff({
+            empId, 
+            firstName, 
+            lastName, 
+            organizationName, 
+            emailId, 
+            mobileNumber, 
+            country, 
+            state, 
+            city, 
+            dob, 
+            dateOfJoining, 
+            photo, 
+            address, 
+            password: encryptedPassword,
+            gender 
+        });
+
+        await staff.save();
+        res.status(201).json({
+            message: 'New staff registered',
+            data: {
+                empId: staff.empId,
+                firstName: staff.firstName,
+                lastName: staff.lastName,
+                organizationName: staff.organizationName,
+                emailId: staff.emailId,
+                mobileNumber: staff.mobileNumber,
+                country: staff.country,
+                state: staff.state,
+                city: staff.city,
+                dob: staff.dob,
+                dateOfJoining: staff.dateOfJoining,
+                photo: staff.photo,
+                address: staff.address,
+                gender: staff.gender
+            },
+        });
+    } catch (err) {
+        console.error("Error registering staff:", err);
+        res.status(500).json({
+            message: 'Internal Server Error',
+            error: err.message,
+        });
     }
 };

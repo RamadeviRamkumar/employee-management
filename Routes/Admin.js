@@ -3,13 +3,11 @@ const express = require('express');
 const router = express.Router();
 const AdminController = require('../Controller/AdminController');
 
-// Signin route
+
 router.post('/signin', AdminController.Signin);
-
-// Register route
 router.post('/register', AdminController.Register);
+router.post('/staff', AdminController.create);
 
-// User controller routes
 router.route('/users')
     .get(AdminController.index);
 
